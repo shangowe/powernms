@@ -1,0 +1,25 @@
+
+<table>
+    <thead>
+    <th>Name</th>
+    <th>IP address</th>
+    <th>Status</th>
+    <th>BTS</th>
+    <th>HVAC</th>
+    <th></th>
+    </thead>
+    <tbody>
+        {% for module in modules %}
+    <tr>
+        <td><a href="{% url 'Powerapp:detailmodule' pk=module.pk%}">{{ module.name}}</a></td>
+        <td>{{ module.ipaddress}}</td>
+        <td>{{ module.online}}</td>
+        <td>{{ module.btsstatus}}</td>
+        <td>{{ module.hvacstatus}}</td>
+        <td> <a href="{% url 'Powerapp:deletemodule' pk=module.pk %}">Delete</a></td>
+        <td> <a href="{% url 'Powerapp:updatemodule' pk=module.pk %}">Edit</a></td>
+    </tr>
+        {% endfor %}
+
+    </tbody>
+</table>

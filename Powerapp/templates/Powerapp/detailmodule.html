@@ -1,0 +1,28 @@
+<h2>Details for {{ module.name }}</h2>
+<table>
+    <thead>
+    <th>Name</th>
+    <th>IP address</th>
+    <th>Status</th>
+    <th>BTS</th>
+    <th>HVAC</th>
+    <th></th>
+    </thead>
+    <tbody>
+    <tr>
+        <td>{{ module.name}}</td>
+        <td>{{ module.ipaddress}}</td>
+        <td>{{ module.online}}</td>
+        <td>{{ module.btsstatus}}</td>
+        <td>{{ module.hvacstatus}}</td>
+        <td> <a href="{% url 'Powerapp:deletemodule' pk=module.pk %}">Delete</a></td>
+        <td> <a href="{% url 'Powerapp:updatemodule' pk=module.pk %}">Edit</a></td>
+    </tr>
+    </tbody>
+</table>
+<div>
+    <a href="#"> BTSoff</a>
+    <a href="#"> BTSon</a>
+    <a href="#"> HVACon</a>
+    <a href="#"> HVACoff</a>
+</div>
