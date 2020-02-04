@@ -13,5 +13,9 @@ urlpatterns=[
     path('updatemodule/<str:pk>', UpdateModule.as_view(), name='updatemodule' ),
     path('detailmodule/<str:pk>', DetailModule.as_view(), name='detailmodule' ),
     path('listmodule', ListModules.as_view(), name = 'listmodules'),
-    path('listmodule', ListModules.as_view(), name = 'home')
+    path('listmodule', ListModules.as_view(), name = 'home'),
+    path('btsoff/<str:ip>', BTSOFF.as_view(), name = 'btsoff'),
+    path('btson/<str:ip>', BTSON.as_view(), name = 'btson'),
+    path('hvacon/<str:ip>', HVACON.as_view(), name = 'hvacon'),
+    path('hvacoff/<str:ip>', HVACOFF.as_view(), name = 'hvacoff'),
 ]

@@ -21,8 +21,8 @@
     </tbody>
 </table>
 <div>
-    <a href="#"> BTSoff</a>
-    <a href="#"> BTSon</a>
-    <a href="#"> HVACon</a>
-    <a href="#"> HVACoff</a>
+    <a href="{% url 'Powerapp:btsoff' ip=module.ipaddress %}"> BTSoff</a>
+    <a href="{% url 'Powerapp:btson' ip=module.ipaddress %}"> BTSon</a>
+    <a href="{% url 'Powerapp:hvacon' ip=module.ipaddress %}">  HVACon</a>
+    <a href="{% url 'Powerapp:hvacoff' ip=module.ipaddress %}">  HVACoff</a>
 </div>

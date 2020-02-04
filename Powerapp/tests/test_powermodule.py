@@ -29,6 +29,21 @@ class TestPowerModule(TestCase):
         self.assertEqual(False,pm.hvacstatus)
         self.assertEqual(False,pm.onlinestatus)
 
+    def testupdatedbbts(self):
+        pm = Powermodule('192.168.10.10')
+        status = True
+        pm.update_db_bts(status)
+        self.assertEqual(True,pm.btsstatus)
+        pm.update_db_bts(False)
+        self.assertEqual(False,pm.btsstatus)
+
+    def testupdatedbhvac(self):
+        pm = Powermodule('192.168.10.10')
+        status = True
+        pm.update_db_hvac(status)
+        self.assertEqual(True,pm.hvacstatus)
+        pm.update_db_hvac(False)
+        self.assertEqual(False,pm.hvacstatus)
 
 
 

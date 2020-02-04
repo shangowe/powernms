@@ -12,7 +12,7 @@ class Powermodule:
         """
         self.ipaddress = ipaddress
         self.sender = Sender() # create an httpsender instance
-        self.mainendpoint = 'http://{0}/{1}'
+        self.mainendpoint = 'http://{0}/{1}/'
 
 
     def setBTSoff(self):
@@ -24,7 +24,7 @@ class Powermodule:
         :return: JSON showing status of BTS, {"BTS":0} or {"BTS":1}
         """
         endpoint = self.mainendpoint.format(self.ipaddress,'btsoff')
-        response = self.sender.sendjson(endpoint)
+        response = self.sender.get(endpoint)
         return response
 
     def setBTSon(self):
@@ -36,7 +36,8 @@ class Powermodule:
         :return: JSON showing status of BTS, {"BTS":0} or {"BTS":1}
         """
         endpoint = self.mainendpoint.format(self.ipaddress,'btson')
-        response = self.sender.sendjson(endpoint)
+        print(endpoint)
+        response = self.sender.get(endpoint)
         return response
 
     def setHVACoff(self):
@@ -47,8 +48,8 @@ class Powermodule:
 
         :return: JSON showing status of HVAC, {"HVAC":0} or {"HVAC":1}
         """
-        endpoint = self.mainendpoint.format(self.ipaddress,'havcoff')
-        response = self.sender.sendjson(endpoint)
+        endpoint = self.mainendpoint.format(self.ipaddress,'hvacoff')
+        response = self.sender.get(endpoint)
         return response
 
     def setHVACon(self):
@@ -60,7 +61,7 @@ class Powermodule:
         :return: JSON showing status of HVAC, {"HVAC":0} or {"HVAC":1}
         """
         endpoint = self.mainendpoint.format(self.ipaddress,'hvacon')
-        response = self.sender.sendjson(endpoint)
+        response = self.sender.get(endpoint)
         return response
 
     def getallStatus(self):
@@ -85,6 +86,28 @@ class Powermodule:
         endpoint = self.mainendpoint.format(self.ipaddress,'getall')
         response = self.sender.sendjson(endpoint)
         return response
+
+    def update_db_bts(self,status):
+        """
+        Method to update the bts status of the module
+
+        :param status:
+        :return:
+        """
+        module = Module.objects.get(ipaddress=self.ipaddress)
+        module.btsstatus = status
+        module.save(update_fields=['btsstatus'])
+
+    def update_db_hvac(self,status):
+        """
+        Method to update the hvac status of the module
+
+        :param status:
+        :return:
+        """
+        module = Module.objects.get(ipaddress=self.ipaddress)
+        module.hvacstatus = status
+        module.save(update_fields=['hvacstatus'])
 
     def update_db(self,status):
         """
@@ -151,6 +174,16 @@ class Powermodule:
         """
         module = self.get_db_info()
         return module.name
+
+    @property
+    def id(self):
+        """
+        Query the ID of the powermodule from the db
+        :return:
+        """
+
+        module = self.get_db_info()
+        return module.pk
 
 
 
