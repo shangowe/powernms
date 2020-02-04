@@ -8,6 +8,7 @@ from Powerapp.views import *
 app_name = "Powerapp"
 
 urlpatterns=[
+    path('', ListModules.as_view(),name='default' ),
     path('addmodule/', CreateModule.as_view(),name='addmodule' ),
     path('deletemodule/<str:pk>/', DeleteModule.as_view(), name='deletemodule'),
     path('updatemodule/<str:pk>', UpdateModule.as_view(), name='updatemodule' ),

@@ -6,11 +6,9 @@ from .forms import ModuleCreateForm
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from .powermodule import Powermodule
-
-
 from .models import Module
 
-# Create your views here.
+
 class CreateModule(CreateView):
     """
     View to create a module model
@@ -27,7 +25,6 @@ class ListModules(ListView):
     model = Module
     template_name = 'Powerapp/listmodules.html'
     context_object_name = 'modules'
-
 
 
 class UpdateModule(UpdateView):

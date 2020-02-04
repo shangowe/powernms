@@ -1,11 +1,16 @@
+{% extends 'Powerapp/base.html' %}
+
+{% block content %}
+<div class="card-body">
 <h2>Details for {{ module.name }}</h2>
-<table>
+<table class="table table-bordered" id="modeldetail" width="100%" cellspacing="0">
     <thead>
     <th>Name</th>
     <th>IP address</th>
     <th>Status</th>
     <th>BTS</th>
     <th>HVAC</th>
+    <th></th>
     <th></th>
     </thead>
     <tbody>
@@ -21,8 +26,11 @@
     </tbody>
 </table>
 <div>
-    <a href="{% url 'Powerapp:btsoff' ip=module.ipaddress %}"> BTSoff</a>
-    <a href="{% url 'Powerapp:btson' ip=module.ipaddress %}"> BTSon</a>
-    <a href="{% url 'Powerapp:hvacon' ip=module.ipaddress %}">  HVACon</a>
-    <a href="{% url 'Powerapp:hvacoff' ip=module.ipaddress %}">  HVACoff</a>
+    <a class = "btn btn-warning" href="{% url 'Powerapp:btsoff' ip=module.ipaddress %}"> BTSoff</a>
+    <a class = "btn btn-primary" href="{% url 'Powerapp:btson' ip=module.ipaddress %}"> BTSon</a>
+    <a class = "btn btn-warning" href="{% url 'Powerapp:hvacoff' ip=module.ipaddress %}">  HVACoff</a>
+    <a class = "btn btn-primary" href="{% url 'Powerapp:hvacon' ip=module.ipaddress %}">  HVACon</a>
+
 </div>
+</div>
+{% endblock %}
