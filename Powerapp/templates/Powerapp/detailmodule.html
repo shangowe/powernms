@@ -7,7 +7,8 @@
     <thead>
     <th>Name</th>
     <th>IP address</th>
-    <th>Status</th>
+    <th>Port</th>
+    <th>Communication Status</th>
     <th>BTS</th>
     <th>HVAC</th>
     <th></th>
@@ -17,7 +18,15 @@
     <tr>
         <td>{{ module.name}}</td>
         <td>{{ module.ipaddress}}</td>
-        <td>{{ module.online}}</td>
+        <td>{{ module.port}}</td>
+        <td>
+           {% if  module.online %}
+            Online
+            {% else %}
+            Offline
+            {%endif %}
+
+        </td>
         <td>{{ module.btsstatus}}</td>
         <td>{{ module.hvacstatus}}</td>
         <td> <a href="{% url 'Powerapp:deletemodule' pk=module.pk %}">Delete</a></td>

@@ -2,6 +2,38 @@
 from .httpsender import Sender
 from .models import Module
 
+
+def get_module_instance(ip):
+    """
+    Method to create a Powermodule instance, checks if instance exists or not
+
+    :param ip:
+    :return: Powermodule if module exists, NullPowermodule if module is not defined in the system
+    """
+
+    module = Module.objects.filter(ipaddress=ip)
+    if module:
+        # module exists
+        return Powermodule(ip)
+    else:
+        return NullPowermodule()
+
+
+def status_parse(value):
+    """
+    A status parsing method, enforce True or False return values
+
+    :param value: any value to represent Boolean
+    :return: Boolean
+    """
+    false = ('false', 'False', 'F', 'False', 'off', 'OFF', 0, False)
+    true = ('true', 'True', 'T', 'True', 'on', 'ON', 1, True)
+
+    if value in true:
+        return True
+    else: return False
+
+
 class Powermodule:
     """
     The powermodule class for managing the attributes of the Powermodule
@@ -87,27 +119,40 @@ class Powermodule:
         response = self.sender.sendjson(endpoint)
         return response
 
-    def update_db_bts(self,status):
+    def update_db_bts(self,val):
         """
         Method to update the bts status of the module
 
         :param status:
         :return:
         """
+        status = status_parse(val) # parse the status value to a boolean value
         module = Module.objects.get(ipaddress=self.ipaddress)
         module.btsstatus = status
         module.save(update_fields=['btsstatus'])
 
-    def update_db_hvac(self,status):
+    def update_db_hvac(self,val):
         """
         Method to update the hvac status of the module
 
         :param status:
         :return:
         """
+        status = status_parse(val) # parse the status value to a boolean value
         module = Module.objects.get(ipaddress=self.ipaddress)
         module.hvacstatus = status
         module.save(update_fields=['hvacstatus'])
+
+    def update_db_name(self,name):
+        """
+        Method to update the name of the module
+
+        :param status:
+        :return:
+        """
+        module = Module.objects.get(ipaddress=self.ipaddress)
+        module.name = name
+        module.save(update_fields=['name'])
 
     def update_db(self,status):
         """
@@ -131,6 +176,43 @@ class Powermodule:
         module = Module.objects.get(ipaddress=self.ipaddress)
 
         return module
+
+    def update_rcvd(self,data):
+        """
+        Process a dict of update data received from the power module
+        :param data:
+        :return:
+        """
+        false = ('false','False','F','False','off','OFF',0)
+        true = ('true','True','T','True','on','ON',1)
+        try:
+            bts_status = data['BTS']
+        except:
+            pass
+
+        try :
+            hvac_status = data['HVAC']
+        except:
+            pass
+
+        try:
+            name = data['name']
+        except:
+            pass
+
+
+
+        # update the name of the module if name was provided
+        try :
+            self.update_db_name(name)
+            self.update_db_bts(bts_status)  # update bts status
+            self.update_db_hvac(hvac_status)  # update hvac status
+        except: pass
+
+
+
+
+
 
 
     @property
@@ -184,6 +266,19 @@ class Powermodule:
 
         module = self.get_db_info()
         return module.pk
+
+class NullPowermodule:
+    """
+    A defualt null powermodule
+    """
+    def __init__(self):
+        self.ipaddress = None
+        self.name = None
+        self.id = None
+        self.onlinestatus = None
+        self.hvacstatus = None
+        self.btsstatus = None
+
 
 
 

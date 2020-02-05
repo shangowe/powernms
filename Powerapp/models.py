@@ -7,6 +7,7 @@ class Module(models.Model):
     """
 
     ipaddress = models.CharField(max_length=200,null=False,primary_key=True) # ip addresss for the power module onsite
+    port = models.CharField(max_length=4,null=True) # the power module port
     online = models.BooleanField(default=False) # onine status of the module
     name = models.CharField(max_length=200,null=True) # the site name of the device module
     btsstatus = models.BooleanField(default=False) # the BTS status of the site on or off

@@ -5,4 +5,4 @@ class ModuleCreateForm(forms.ModelForm):
 
     class Meta:
         model = Module
-        fields = ('ipaddress','name')
+        fields = ('ipaddress','port','name')

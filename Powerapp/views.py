@@ -1,12 +1,13 @@
 from django.shortcuts import render
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView, DetailView
 from django.views import View
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from .forms import ModuleCreateForm
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from .powermodule import Powermodule
+from .powermodule import Powermodule, get_module_instance
 from .models import Module
+import json
 
 
 class CreateModule(CreateView):
@@ -120,6 +121,42 @@ class  HVACON(View):
                 module.update_db_hvac(True)
         # return the detail view for the module
         return HttpResponseRedirect(reverse_lazy('Powerapp:detailmodule',kwargs={'pk':module.id}))
+
+class ModuleUpdateView(View):
+    """
+    The view for receiving update requests from modules
+    """
+
+    def post(self,request,*args,**kwargs):
+        """
+        Method to process posts from the power module
+
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        json_string = request.body.decode('utf-8') # extract the json data
+        data = json.loads(json_string) # load json string to a dict
+        module_ip = data['module'] # module ip address
+
+        pm = get_module_instance(module_ip) # create a powermodule instance
+        if pm.ipaddress is not None:
+            try:
+                pm.update_rcvd(data) # pass the received dict to the module and update db
+                data = {'ACK':'OK'}
+            except:
+                data = {'ACK':'NOK'}
+        else :
+            # do not process unkown module requests, log the miscellaneous event
+            pass
+        return JsonResponse(data)
+
+
+
+
+
+
 
 
 

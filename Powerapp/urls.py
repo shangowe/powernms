@@ -19,4 +19,5 @@ urlpatterns=[
     path('btson/<str:ip>', BTSON.as_view(), name = 'btson'),
     path('hvacon/<str:ip>', HVACON.as_view(), name = 'hvacon'),
     path('hvacoff/<str:ip>', HVACOFF.as_view(), name = 'hvacoff'),
+    path('update/', ModuleUpdateView.as_view(), name = 'moduleview'),
 ]
