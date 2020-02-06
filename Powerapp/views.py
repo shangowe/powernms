@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from .forms import ModuleCreateForm
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from .powermodule import Powermodule, get_module_instance
+from .powermodule import Powermodule, get_module_instance, UpdateRecorder
 from .models import Module
 import json
 
@@ -141,6 +141,7 @@ class ModuleUpdateView(View):
         module_ip = data['module'] # module ip address
 
         pm = get_module_instance(module_ip) # create a powermodule instance
+
         if pm.ipaddress is not None:
             try:
                 pm.update_rcvd(data) # pass the received dict to the module and update db
@@ -151,6 +152,30 @@ class ModuleUpdateView(View):
             # do not process unkown module requests, log the miscellaneous event
             pass
         return JsonResponse(data)
+
+
+class ModuleHelloView(View):
+    """
+    Class to handle hello packets from the module
+    """
+
+    def post(self,request,*args,**kwargs):
+        """
+        Handle POST data from the module
+
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        json_string = request.body.decode('utf-8') # extract the json data
+        data = json.loads(json_string) # load json string to a dict
+
+        updaterecorder = UpdateRecorder(data)
+        new_record = updaterecorder.save()
+        return JsonResponse(data)
+
+
 
 
 

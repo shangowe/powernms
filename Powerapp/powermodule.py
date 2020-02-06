@@ -1,6 +1,6 @@
 
 from .httpsender import Sender
-from .models import Module
+from .models import Module, UpdateTracker
 
 
 def get_module_instance(ip):
@@ -183,8 +183,6 @@ class Powermodule:
         :param data:
         :return:
         """
-        false = ('false','False','F','False','off','OFF',0)
-        true = ('true','True','T','True','on','ON',1)
         try:
             bts_status = data['BTS']
         except:
@@ -208,12 +206,6 @@ class Powermodule:
             self.update_db_bts(bts_status)  # update bts status
             self.update_db_hvac(hvac_status)  # update hvac status
         except: pass
-
-
-
-
-
-
 
     @property
     def btsstatus(self):
@@ -279,7 +271,80 @@ class NullPowermodule:
         self.hvacstatus = None
         self.btsstatus = None
 
+class NullUpdateTracker:
+    """
+    A null record tracker model
+    """
+    def __init__(self):
+        self.module = None
+        self.btsstatus = None
+        self.hvacstatus = None
+        self.time = None
+        self.delta = None
 
+
+class UpdateRecorder:
+    """
+    Class to handle update records for modules
+    """
+    def __init__(self, data):
+
+        self.module = self.check_module_exist(data) # check if module exists a NullPowermodule is returned if not exist
+        self.hvacstatus = None
+        self.btsstatus = None
+
+        if self.module.ipaddress is not None:
+            try :
+                self.hvacstatus = status_parse(data['HVAC'])
+                self.btsstatus = status_parse(data['BTS'])
+            except:
+                pass
+        else:
+            pass
+
+    def check_module_exist(self,data):
+
+        try:
+            return get_module_instance(data['module'])  # create a powermodule instance
+        except:
+            # create a Null module from the data
+            return NullPowermodule()
+
+
+
+    def check_if_update_is_different(self):
+        """
+        Checks if the received record is diferent from the received update.
+
+        :return: True or False
+        """
+        module = Module.objects.get(ipaddress=self.module.ipaddress)
+        last_update= UpdateTracker.objects.filter(module=module).latest(field_name='time') # get the latest update for the module
+        last_update_list = (last_update.btsstatus, last_update.hvacstatus)
+        new_update_list = (self.btsstatus,self.hvacstatus)
+
+        if last_update_list == new_update_list:
+            return False
+        else : return True
+
+
+    def save(self):
+        """
+        Method to save the received update data
+
+        :return:
+        """
+        if self.module.ipaddress is None:
+            # check if the module is defined in the NMS, do nothing if its not defined
+            return NullUpdateTracker
+
+        else :
+            delta = self.check_if_update_is_different()
+            module = Module.objects.get(ipaddress=self.module.ipaddress)
+            record = UpdateTracker.objects.create(module=module, btsstatus=self.btsstatus,
+                                                  hvacstatus=self.hvacstatus,
+                                                  delta=delta)
+            return record
 
 
 

@@ -14,9 +14,20 @@ class Module(models.Model):
     hvacstatus = models.BooleanField(default=False) # the HVAC status of the site on or off
 
 
+
     def __str__(self):
         return self.ipaddress
 
     def get_absolute_url(self):
 
         return reverse('Powerapp:detailmodule', kwargs={'pk':self.pk})
+
+class UpdateTracker(models.Model):
+    """
+    A model to track all updates from models
+    """
+    module = models.ForeignKey(Module,on_delete=models.CASCADE)
+    btsstatus = models.BooleanField(default=False) # the BTS status of the site on or off
+    hvacstatus = models.BooleanField(default=False) # the HVAC status of the site on or off
+    time = models.DateTimeField(auto_now_add=True) # update time update was received
+    delta = models.BooleanField(default=False) # indicate if changed or not

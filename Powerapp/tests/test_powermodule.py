@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
-from Powerapp.powermodule import Powermodule, NullPowermodule, get_module_instance
-from Powerapp.models import Module
+from Powerapp.powermodule import Powermodule, NullPowermodule, get_module_instance, UpdateRecorder
+from Powerapp.models import Module, UpdateTracker
 import json
 
 class TestPowerModule(TestCase):
@@ -144,6 +144,83 @@ class TestPowerModule(TestCase):
 
         pm = get_module_instance('192.168.10.10')
         self.assertEqual('MOD1',pm.name)
+
+    def testupdaterecorder(self):
+        """
+        Test the UpdateRecorder class
+
+        :return: None
+        """
+        data = {'module': '192.168.10.10', 'BTS': 'True', 'HVAC': 'False', 'name': 'Malay'}
+        urcd = UpdateRecorder(data)
+
+        self.assertEqual(True,urcd.btsstatus)
+        self.assertEqual(False,urcd.hvacstatus)
+        self.assertEqual('192.168.10.10',urcd.module.ipaddress)
+
+    def testupdaterecorder_wrongmodule(self):
+        """
+        Test the UpdateRecorder class
+
+        :return: None
+        """
+        data = {'modulel': '192.168.10.1', 'BTS': 'True', 'HVAC': 'False', 'name': 'Malay'}
+        urcd = UpdateRecorder(data)
+
+        self.assertEqual(None,urcd.btsstatus)
+        self.assertEqual(None,urcd.hvacstatus)
+        self.assertEqual(None,urcd.module.ipaddress)
+
+    def testupdaterecorder_wrongdata(self):
+        """
+        Test the UpdateRecorder class
+
+        :return: None
+        """
+        data = {'modulel': '192.168.10.10', 'BTS': 'True', 'HVAC': 'False', 'name': 'Malay'}
+        urcd = UpdateRecorder(data)
+
+        self.assertEqual(None,urcd.btsstatus)
+        self.assertEqual(None,urcd.hvacstatus)
+        self.assertEqual(None,urcd.module.ipaddress)
+
+    def testupdaterecorder_checkupdate(self):
+        """
+        Test the UpdateRecorder.check_if_update_is_different() method
+
+        :return: None
+        """
+        module = Module.objects.get(ipaddress='192.168.10.10')
+        UpdateTracker.objects.create(module=module,btsstatus=True,hvacstatus=True)
+        data = {'module': '192.168.10.10', 'BTS': 'True', 'HVAC': 'False', 'name': 'Malay'}
+        urcd = UpdateRecorder(data)
+        self.assertEqual(True,urcd.check_if_update_is_different())
+        self.assertEqual(True,urcd.btsstatus)
+        self.assertEqual(False,urcd.hvacstatus)
+        self.assertEqual('192.168.10.10',urcd.module.ipaddress)
+
+    def testupdaterecorder_save(self):
+        """
+        Test the UpdateRecorder.check_if_update_is_different() method
+
+        :return: None
+        """
+        module = Module.objects.get(ipaddress='192.168.10.10')
+        UpdateTracker.objects.create(module=module,btsstatus=True,hvacstatus=True)
+        data = {'module': '192.168.10.10', 'BTS': 'True', 'HVAC': 'False', 'name': 'Malay'}
+        urcd = UpdateRecorder(data)
+        newrcd = urcd.save()
+
+        self.assertEqual(True,newrcd.delta)
+        self.assertEqual(True,newrcd.delta)
+        self.assertEqual(True,newrcd.delta)
+        self.assertEqual(True,urcd.btsstatus)
+        self.assertEqual(False,urcd.hvacstatus)
+        self.assertEqual('192.168.10.10',urcd.module.ipaddress)
+
+
+
+
 
 
 
