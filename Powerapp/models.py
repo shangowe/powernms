@@ -31,3 +31,7 @@ class UpdateTracker(models.Model):
     hvacstatus = models.BooleanField(default=False) # the HVAC status of the site on or off
     time = models.DateTimeField(auto_now_add=True) # update time update was received
     delta = models.BooleanField(default=False) # indicate if changed or not
+
+    def serialize(self):
+        ans = {'BTS':self.btsstatus,'HVAC':self.hvacstatus}
+        return ans

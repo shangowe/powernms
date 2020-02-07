@@ -218,6 +218,31 @@ class TestPowerModule(TestCase):
         self.assertEqual(False,urcd.hvacstatus)
         self.assertEqual('192.168.10.10',urcd.module.ipaddress)
 
+    def testhelloapicall(self):
+        """
+        Test the api call request from module
+
+        :return:
+        """
+        data = {'module': '192.168.10.10', 'BTS': 'True', 'HVAC': 'T', 'name':'Himal'}
+        response = self.moduleclient.post('http://127.0.0.1:8000/hello/', data,
+                                          content_type="application/json")
+
+        json_string = response.content.decode("utf-8")  # decode json content to string
+        data = json.loads(json_string)  # convert json string to a dict
+        sample = {"ACK": "OK","BTS":True,"HVAC":True}
+        self.assertJSONEqual(json_string,sample)
+
+        data = {'module': '192.168.10.1', 'BTS': 'True', 'HVAC': 'T', 'name':'Himal'} # data with an error
+        response = self.moduleclient.post('http://127.0.0.1:8000/hello/', data,
+                                          content_type="application/json")
+
+        json_string = response.content.decode("utf-8")  # decode json content to string
+        data = json.loads(json_string)  # convert json string to a dict
+        sample = {"ACK": "ER","BTS":None,"HVAC":None}
+        self.assertJSONEqual(json_string,sample)
+
+
 
 
 

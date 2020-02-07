@@ -282,6 +282,10 @@ class NullUpdateTracker:
         self.time = None
         self.delta = None
 
+    def serialize(self):
+        ans ={'HVAC':self.hvacstatus,'BTS':self.btsstatus}
+        return ans
+
 
 class UpdateRecorder:
     """
@@ -319,7 +323,11 @@ class UpdateRecorder:
         :return: True or False
         """
         module = Module.objects.get(ipaddress=self.module.ipaddress)
-        last_update= UpdateTracker.objects.filter(module=module).latest(field_name='time') # get the latest update for the module
+
+        try :
+            last_update= UpdateTracker.objects.filter(module=module).latest(field_name='time') # get the latest update for the module
+        except :
+            return True
         last_update_list = (last_update.btsstatus, last_update.hvacstatus)
         new_update_list = (self.btsstatus,self.hvacstatus)
 
@@ -336,14 +344,18 @@ class UpdateRecorder:
         """
         if self.module.ipaddress is None:
             # check if the module is defined in the NMS, do nothing if its not defined
-            return NullUpdateTracker
+            return NullUpdateTracker()
 
         else :
             delta = self.check_if_update_is_different()
             module = Module.objects.get(ipaddress=self.module.ipaddress)
-            record = UpdateTracker.objects.create(module=module, btsstatus=self.btsstatus,
+            try:
+                record = UpdateTracker.objects.create(module=module, btsstatus=self.btsstatus,
                                                   hvacstatus=self.hvacstatus,
                                                   delta=delta)
+            except:
+                #TODO add logging
+                record = NullUpdateTracker() # return a null record
             return record
 
 

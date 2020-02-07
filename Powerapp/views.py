@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView, DetailView
 from django.views import View
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.core import serializers
 from .forms import ModuleCreateForm
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -171,9 +172,24 @@ class ModuleHelloView(View):
         json_string = request.body.decode('utf-8') # extract the json data
         data = json.loads(json_string) # load json string to a dict
 
-        updaterecorder = UpdateRecorder(data)
-        new_record = updaterecorder.save()
-        return JsonResponse(data)
+        updaterecorder = UpdateRecorder(data) # create update recorder instance
+        new_record = updaterecorder.save() # save the record
+
+        if new_record.module is not None:
+            ack = {'ACK':'OK'} # no error occured
+        else :
+            ack = {'ACK':'ER'}  # an error occured
+
+        try:
+            reply = new_record.serialize() # convert to JSON
+            reply = {**ack,**reply} # merge dictionaries
+        except Exception as e:
+            print(e)
+            reply=ack
+
+
+
+        return JsonResponse(reply)
 
 
 
