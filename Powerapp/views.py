@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView, DetailView
 from django.views import View
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.core import serializers
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from .forms import ModuleCreateForm
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -160,6 +161,11 @@ class ModuleHelloView(View):
     Class to handle hello packets from the module
     """
 
+    @method_decorator(csrf_exempt)  # required
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+
     def post(self,request,*args,**kwargs):
         """
         Handle POST data from the module
@@ -171,7 +177,7 @@ class ModuleHelloView(View):
         """
         json_string = request.body.decode('utf-8') # extract the json data
         data = json.loads(json_string) # load json string to a dict
-
+        print(data)
         updaterecorder = UpdateRecorder(data) # create update recorder instance
         new_record = updaterecorder.save() # save the record
 
