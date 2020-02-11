@@ -22,7 +22,7 @@
         <td><a href="{% url 'Powerapp:detailmodule' pk=module.pk%}">{{ module.name}}</a></td>
         <td>{{ module.ipaddress}}</td>
         <td>{{ module.port}}</td>
-        <td>           {% if module.online %}
+        <td>           {% if module.online_status %}
             Online
             {% else %}
             Offline

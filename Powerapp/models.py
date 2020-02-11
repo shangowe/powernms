@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from datetime import datetime
 # Create your models here.
 class Module(models.Model):
     """
@@ -21,6 +22,26 @@ class Module(models.Model):
     def get_absolute_url(self):
 
         return reverse('Powerapp:detailmodule', kwargs={'pk':self.pk})
+
+    @property
+    def online_status(self):
+        lastupdate = UpdateTracker.objects.filter(module=self).latest('time')
+        last_update_time = lastupdate.time.replace(tzinfo="Africa/Harare")
+        current_time = datetime.now().replace(tzinfo=None)
+        print(current_time)
+        print(last_update_time)
+
+
+        difference = current_time - last_update_time
+        difference_in_minutes = difference.seconds/60 - 120
+        print(difference_in_minutes)
+
+        if difference_in_minutes > 3 :
+            return False
+        else:
+            return True
+
+
 
 class UpdateTracker(models.Model):
     """
