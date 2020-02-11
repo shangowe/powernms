@@ -13,6 +13,7 @@
     <th>HVAC</th>
     <th></th>
     <th></th>
+    <th></th>
     </thead>
     <tbody>
     <tr>
@@ -21,16 +22,31 @@
         <td>{{ module.port}}</td>
         <td>
            {% if  module.online %}
-            Online
+            <p class="btn btn-primary">Online</p>
             {% else %}
-            Offline
+            <p class = "btn btn-warning">Offline</p>
             {%endif %}
 
         </td>
-        <td>{{ module.btsstatus}}</td>
-        <td>{{ module.hvacstatus}}</td>
+        <td>
+            {% if module.btsstatus %}
+           <p class="btn btn-primary">Switched ON</p>
+            {% else %}
+           <p class = "btn btn-warning">Switched OFF</p>
+            {% endif %}
+        </td>
+        <td>
+            {% if module.hvacstatus %}
+            <p class="btn btn-primary">Switched ON</p>
+            {% else %}
+            <p class = "btn btn-warning">Switched OFF</p>
+            {% endif %}
+        </td>
+
+        </td>
         <td> <a href="{% url 'Powerapp:deletemodule' pk=module.pk %}">Delete</a></td>
         <td> <a href="{% url 'Powerapp:updatemodule' pk=module.pk %}">Edit</a></td>
+        <td> <a href="{% url 'Powerapp:history' pk=module.ipaddress %}">Updates</a></td>
     </tr>
     </tbody>
 </table>

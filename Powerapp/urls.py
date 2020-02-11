@@ -21,4 +21,6 @@ urlpatterns=[
     path('hvacoff/<str:ip>', HVACOFF.as_view(), name = 'hvacoff'),
     path('update/', ModuleUpdateView.as_view(), name = 'moduleview'),
     path('hello/', ModuleHelloView.as_view(), name = 'helloview'),
+    path('history/<str:pk>', HistoryView.as_view(), name = 'history'),
+
 ]

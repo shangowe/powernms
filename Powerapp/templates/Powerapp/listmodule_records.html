@@ -1,0 +1,46 @@
+{% extends 'Powerapp/base.html' %}
+
+{% block content %}
+
+<div class="card-body">
+    <h2> {{ record.module }}Updates History</h2>
+    <div class="table-responsive">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+    <thead>
+    <th>Name</th>
+    <th>BTS</th>
+    <th>HVAC</th>
+    <th>Time</th>
+    <th></th>
+    </thead>
+    <tbody>
+        {% for record in updates %}
+    <tr>
+        <td><a href="{% url 'Powerapp:detailmodule' pk=record.module.pk%}">{{ record.module.name}}</a></td>
+        <td>
+                     {% if record.btsstatus %}
+            <p class="btn btn-primary">Switched ON</p>
+            {% else %}
+             <p class = "btn btn-warning">Switched OFF</p>
+            {% endif %}
+        </td>
+
+        </td>
+        <td>
+            {% if record.hvacstatus %}
+            <p class="btn btn-primary">Switched ON</p>
+            {% else %}
+            <p class = "btn btn-warning">Switched OFF</p>
+            {% endif %}
+        </td>
+
+        </td>
+        <td>{{ record.time}}</td>
+    </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+    </div>
+</div>
+{% endblock %}

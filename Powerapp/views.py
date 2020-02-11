@@ -8,7 +8,7 @@ from .forms import ModuleCreateForm
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from .powermodule import Powermodule, get_module_instance, UpdateRecorder
-from .models import Module
+from .models import Module, UpdateTracker
 import json
 
 
@@ -155,6 +155,17 @@ class ModuleUpdateView(View):
             pass
         return JsonResponse(data)
 
+
+class HistoryView(ListView):
+    """
+    View to list all modules on the NMS
+    """
+    model = UpdateTracker
+    template_name = 'Powerapp/listmodule_records.html'
+    context_object_name = 'updates'
+
+    def get_queryset(self):
+        return UpdateTracker.objects.filter(module__ipaddress=self.kwargs['pk']).order_by('-time')[:20]
 
 class ModuleHelloView(View):
     """

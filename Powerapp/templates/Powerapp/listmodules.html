@@ -14,6 +14,7 @@
     <th>HVAC</th>
     <th></th>
     <th></th>
+    <th></th>
     </thead>
     <tbody>
         {% for module in modules %}
@@ -30,6 +31,7 @@
         <td>{{ module.hvacstatus}}</td>
         <td> <a href="{% url 'Powerapp:deletemodule' pk=module.pk %}">Delete</a></td>
         <td> <a href="{% url 'Powerapp:updatemodule' pk=module.pk %}">Edit</a></td>
+        <td> <a href="{% url 'Powerapp:history' pk=module.ipaddress %}">Updates</a></td>
     </tr>
         {% endfor %}
 
