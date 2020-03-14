@@ -12,6 +12,7 @@
     <th>Communication Status</th>
     <th>BTS</th>
     <th>HVAC</th>
+    <th>GEN</th>
     <th></th>
     <th></th>
     <th></th>
@@ -29,6 +30,7 @@
             {%endif %}</td>
         <td>{{ module.btsstatus}}</td>
         <td>{{ module.hvacstatus}}</td>
+        <td>{{ module.genstatus}}</td>
         <td> <a href="{% url 'Powerapp:deletemodule' pk=module.pk %}">Delete</a></td>
         <td> <a href="{% url 'Powerapp:updatemodule' pk=module.pk %}">Edit</a></td>
         <td> <a href="{% url 'Powerapp:history' pk=module.ipaddress %}">Updates</a></td>

@@ -11,6 +11,7 @@
     <th>Communication Status</th>
     <th>BTS</th>
     <th>HVAC</th>
+    <th>GEN</th>
     <th></th>
     <th></th>
     <th></th>
@@ -42,6 +43,13 @@
             <p class = "btn btn-warning">Switched OFF</p>
             {% endif %}
         </td>
+        <td>
+            {% if module.genstatus %}
+            <p class="btn btn-primary">Switched ON</p>
+            {% else %}
+            <p class = "btn btn-warning">Switched OFF</p>
+            {% endif %}
+        </td>
 
         </td>
         <td> <a href="{% url 'Powerapp:deletemodule' pk=module.pk %}">Delete</a></td>
@@ -50,6 +58,7 @@
     </tr>
     </tbody>
 </table>
+    {% if module.online_status %}
 <div>
     {% if module.btsstatus %}
     <a class = "btn btn-warning" href="{% url 'Powerapp:btsoff' ip=module.ipaddress %}"> BTSoff</a>
@@ -62,7 +71,35 @@
     {% else %}
     <a class = "btn btn-primary" href="{% url 'Powerapp:hvacon' ip=module.ipaddress %}">  HVACon</a>
     {% endif %}
+    {% if module.genstatus %}
+    <a class = "btn btn-warning" href="{% url 'Powerapp:genoff' ip=module.ipaddress %}">  GENoff</a>
+
+    {% else %}
+    <a class = "btn btn-primary " href="{% url 'Powerapp:genon' ip=module.ipaddress %}">  GENon</a>
+    {% endif %}
 
 </div>
+    {% else %}
+<div>
+    {% if module.btsstatus %}
+    <a class = "btn btn-warning disabled" href="{% url 'Powerapp:btsoff' ip=module.ipaddress %}"> BTSoff</a>
+    {% else %}
+    <a class = "btn btn-primary disabled" href="{% url 'Powerapp:btson' ip=module.ipaddress %}"> BTSon</a>
+    {% endif %}
+    {% if module.hvacstatus %}
+    <a class = "btn btn-warning disabled" href="{% url 'Powerapp:hvacoff' ip=module.ipaddress %}">  HVACoff</a>
+
+    {% else %}
+    <a class = "btn btn-primary disabled" href="{% url 'Powerapp:hvacon' ip=module.ipaddress %}">  HVACon</a>
+    {% endif %}
+    {% if module.genstatus %}
+    <a class = "btn btn-warning disabled" href="{% url 'Powerapp:genoff' ip=module.ipaddress %}">  GENoff</a>
+
+    {% else %}
+    <a class = "btn btn-primary disabled" href="{% url 'Powerapp:genon' ip=module.ipaddress %}">  GENon</a>
+    {% endif %}
+
+</div>
+    {% endif %}
 </div>
 {% endblock %}

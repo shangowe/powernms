@@ -47,6 +47,14 @@ class TestPowerModule(TestCase):
         pm.update_db_hvac(False)
         self.assertEqual(False,pm.hvacstatus)
 
+    def testupdatedbgen(self):
+        pm = Powermodule('192.168.10.10')
+        status = True
+        pm.update_db_gen(status)
+        self.assertEqual(True,pm.genstatus)
+        pm.update_db_gen(False)
+        self.assertEqual(False,pm.genstatus)
+
     def testupdatedbname(self):
         pm = Powermodule('192.168.10.10')
         status = True

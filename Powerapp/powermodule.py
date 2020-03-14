@@ -96,6 +96,30 @@ class Powermodule:
         response = self.sender.get(endpoint)
         return response
 
+    def setGENoff(self):
+        """
+        Method to send an API request to the PowerModule on site to turn off the GEN relay.
+
+        API request : http://self.ipaddress/genoff
+
+        :return: JSON showing status of GEN, {"GEN":0} or {"GEN":1}
+        """
+        endpoint = self.mainendpoint.format(self.ipaddress,'genoff')
+        response = self.sender.get(endpoint)
+        return response
+
+    def setGENon(self):
+        """
+        Method to send an API request to the PowerModule on site to turn on the GEN relay.
+
+        API request : http://self.ipaddress/hvacon
+
+        :return: JSON showing status of GEN, {"GEN":0} or {"GEN":1}
+        """
+        endpoint = self.mainendpoint.format(self.ipaddress,'genon')
+        response = self.sender.get(endpoint)
+        return response
+
     def getallStatus(self):
         """
         Method to send an API request to the PowerModule to get the entire status of the BTS.
@@ -142,6 +166,18 @@ class Powermodule:
         module = Module.objects.get(ipaddress=self.ipaddress)
         module.hvacstatus = status
         module.save(update_fields=['hvacstatus'])
+
+    def update_db_gen(self,val):
+        """
+        Method to update the gen status of the module
+
+        :param status:
+        :return:
+        """
+        status = status_parse(val) # parse the status value to a boolean value
+        module = Module.objects.get(ipaddress=self.ipaddress)
+        module.genstatus = status
+        module.save(update_fields=['genstatus'])
 
     def update_db_name(self,name):
         """
@@ -226,6 +262,16 @@ class Powermodule:
         """
         module = self.get_db_info()
         return module.hvacstatus
+
+    @property
+    def genstatus(self):
+        """
+        Query the hvac status from the db
+
+        :return: Boolean
+        """
+        module = self.get_db_info()
+        return module.genstatus
 
     @property
     def onlinestatus(self):

@@ -124,6 +124,39 @@ class  HVACON(View):
         # return the detail view for the module
         return HttpResponseRedirect(reverse_lazy('Powerapp:detailmodule',kwargs={'pk':module.id}))
 
+class GENOFF(View):
+    """
+    Class to handle GEN OFF control
+    """
+
+    def get(self,request,*args,**kwargs):
+
+        module_ip = kwargs['ip'] # get ip address of module
+        module = Powermodule(module_ip) # create a powermodule instance
+        response = module.setGENff()
+        # check if response is OK
+        if response.status_code == 200:
+                module.update_db_gen(False)
+        # return the detail view for the module
+        return HttpResponseRedirect(reverse_lazy('Powerapp:detailmodule',kwargs={'pk':module.id}))
+
+
+class GENON(View):
+    """
+    Class to handle GEN ON control
+    """
+
+    def get(self,request,*args,**kwargs):
+
+        module_ip = kwargs['ip'] # get ip address of module
+        module = Powermodule(module_ip) # create a powermodule instance
+        response = module.setGENon()
+        # check if response is OK
+        if response.status_code == 200:
+                module.update_db_gen(True)
+        # return the detail view for the module
+        return HttpResponseRedirect(reverse_lazy('Powerapp:detailmodule',kwargs={'pk':module.id}))
+
 class ModuleUpdateView(View):
     """
     The view for receiving update requests from modules
