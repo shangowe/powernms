@@ -21,7 +21,7 @@
         <td>{{ module.ipaddress}}</td>
         <td>{{ module.port}}</td>
         <td>
-           {% if  module.online %}
+           {% if  module.online_status %}
             <p class="btn btn-primary">Online</p>
             {% else %}
             <p class = "btn btn-warning">Offline</p>
@@ -51,10 +51,17 @@
     </tbody>
 </table>
 <div>
+    {% if module.btsstatus %}
     <a class = "btn btn-warning" href="{% url 'Powerapp:btsoff' ip=module.ipaddress %}"> BTSoff</a>
+    {% else %}
     <a class = "btn btn-primary" href="{% url 'Powerapp:btson' ip=module.ipaddress %}"> BTSon</a>
+    {% endif %}
+    {% if module.hvacstatus %}
     <a class = "btn btn-warning" href="{% url 'Powerapp:hvacoff' ip=module.ipaddress %}">  HVACoff</a>
+
+    {% else %}
     <a class = "btn btn-primary" href="{% url 'Powerapp:hvacon' ip=module.ipaddress %}">  HVACon</a>
+    {% endif %}
 
 </div>
 </div>

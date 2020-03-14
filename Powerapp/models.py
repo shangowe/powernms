@@ -13,6 +13,7 @@ class Module(models.Model):
     name = models.CharField(max_length=200,null=True) # the site name of the device module
     btsstatus = models.BooleanField(default=False) # the BTS status of the site on or off
     hvacstatus = models.BooleanField(default=False) # the HVAC status of the site on or off
+    genstatus = models.BooleanField(default=False) # the GEN status of the site on or off
 
 
 
@@ -26,7 +27,7 @@ class Module(models.Model):
     @property
     def online_status(self):
         lastupdate = UpdateTracker.objects.filter(module=self).latest('time')
-        last_update_time = lastupdate.time.replace(tzinfo="Africa/Harare")
+        last_update_time = lastupdate.time.replace(tzinfo=None)
         current_time = datetime.now().replace(tzinfo=None)
         print(current_time)
         print(last_update_time)
@@ -50,9 +51,10 @@ class UpdateTracker(models.Model):
     module = models.ForeignKey(Module,on_delete=models.CASCADE)
     btsstatus = models.BooleanField(default=False) # the BTS status of the site on or off
     hvacstatus = models.BooleanField(default=False) # the HVAC status of the site on or off
+    genstatus = models.BooleanField(default=False) # the GEN status of the site on or off
     time = models.DateTimeField(auto_now_add=True) # update time update was received
     delta = models.BooleanField(default=False) # indicate if changed or not
 
     def serialize(self):
-        ans = {'BTS':self.btsstatus,'HVAC':self.hvacstatus}
+        ans = {'BTS':self.btsstatus,'HVAC':self.hvacstatus,'GEN':self.genstatus}
         return ans
