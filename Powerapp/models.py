@@ -51,7 +51,8 @@ class UpdateTracker(models.Model):
     module = models.ForeignKey(Module,on_delete=models.CASCADE)
     btsstatus = models.BooleanField(default=False) # the BTS status of the site on or off
     hvacstatus = models.BooleanField(default=False) # the HVAC status of the site on or off
-    genstatus = models.BooleanField(default=False) # the GEN status of the site on or off
+    genstatus = models.BooleanField(default=False,null=True) # the GEN status of the site on or off
+    mainsstatus = models.BooleanField(default=False, null=True) # the MAINS status of the site on or off
     time = models.DateTimeField(auto_now_add=True) # update time update was received
     delta = models.BooleanField(default=False) # indicate if changed or not
 

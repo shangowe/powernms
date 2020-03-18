@@ -133,7 +133,7 @@ class GENOFF(View):
 
         module_ip = kwargs['ip'] # get ip address of module
         module = Powermodule(module_ip) # create a powermodule instance
-        response = module.setGENff()
+        response = module.setGENoff()
         # check if response is OK
         if response.status_code == 200:
                 module.update_db_gen(False)
@@ -221,7 +221,6 @@ class ModuleHelloView(View):
         """
         json_string = request.body.decode('utf-8') # extract the json data
         data = json.loads(json_string) # load json string to a dict
-        print(data)
         updaterecorder = UpdateRecorder(data) # create update recorder instance
         new_record = updaterecorder.save() # save the record
 

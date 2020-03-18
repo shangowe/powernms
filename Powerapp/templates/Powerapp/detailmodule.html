@@ -1,63 +1,98 @@
 {% extends 'Powerapp/base.html' %}
 
 {% block content %}
-<div class="card-body">
+<div class="container-fluid" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 <h2>Details for {{ module.name }}</h2>
-<table class="table table-bordered" id="modeldetail" width="100%" cellspacing="0">
-    <thead>
-    <th>Name</th>
-    <th>IP address</th>
-    <th>Port</th>
-    <th>Communication Status</th>
-    <th>BTS</th>
-    <th>HVAC</th>
-    <th>GEN</th>
-    <th></th>
-    <th></th>
-    <th></th>
-    </thead>
-    <tbody>
-    <tr>
-        <td>{{ module.name}}</td>
-        <td>{{ module.ipaddress}}</td>
-        <td>{{ module.port}}</td>
-        <td>
-           {% if  module.online_status %}
-            <p class="btn btn-primary">Online</p>
-            {% else %}
-            <p class = "btn btn-warning">Offline</p>
-            {%endif %}
+    <div class="row">
 
-        </td>
-        <td>
-            {% if module.btsstatus %}
-           <p class="btn btn-primary">Switched ON</p>
-            {% else %}
-           <p class = "btn btn-warning">Switched OFF</p>
-            {% endif %}
-        </td>
-        <td>
-            {% if module.hvacstatus %}
-            <p class="btn btn-primary">Switched ON</p>
-            {% else %}
-            <p class = "btn btn-warning">Switched OFF</p>
-            {% endif %}
-        </td>
-        <td>
-            {% if module.genstatus %}
-            <p class="btn btn-primary">Switched ON</p>
-            {% else %}
-            <p class = "btn btn-warning">Switched OFF</p>
-            {% endif %}
-        </td>
-
-        </td>
-        <td> <a href="{% url 'Powerapp:deletemodule' pk=module.pk %}">Delete</a></td>
-        <td> <a href="{% url 'Powerapp:updatemodule' pk=module.pk %}">Edit</a></td>
-        <td> <a href="{% url 'Powerapp:history' pk=module.ipaddress %}">Updates</a></td>
-    </tr>
-    </tbody>
-</table>
+        <div class="card border-secondary mb-3" id="module_properties">
+            <div class="card-body">
+                <div class="card-title">
+                    <h3>Properties</h3>
+                 </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <strong>Name:</strong>
+                        <span>{{ module.name}}</span>
+                    </div>
+                    <div class="col-md-3">
+                        <strong>Communication Address:</strong>
+                        <span>{{ module.ipaddress}}</span>
+                    </div>
+                    <div class="col-md-3">
+                        <label><strong>Communication Status:</strong></label>
+                                  <span> {% if  module.online_status %}
+                                        Online
+                                    {% else %}
+                                        Offline
+                                    {%endif %}
+                                  </span>
+                    </div>
+                    <div class="col-md-3">
+                        <label><strong>Battery Threshold:</strong></label>
+                        <span>
+                            {% if module.battery_threshold %}
+                                {{ module.battery_threshold}}
+                            {% else %}
+                                NA
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="card border-secondary mb-3" id="module_status">
+            <div class="card-body">
+                <div class="card-title">
+                    <h3>Status</h3>
+                </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <strong>BTS:</strong>
+                    <span>
+                                   {% if  module.btsstatus %}
+                ON
+                {% else %}
+                OFF
+                {%endif %}
+                    </span>
+                </div>
+                <div class="col-md-3">
+                    <strong>HVAC:</strong>
+                    <span>
+                                   {% if  module.hvacstatus %}
+                ON
+                {% else %}
+                OFF
+                {%endif %}
+                    </span>
+                </div>
+                <div class="col-md-3">
+                    <strong>GEN:</strong>
+                    <span>
+                                   {% if  module.genstatus %}
+                ON
+                {% else %}
+                OFF
+                {%endif %}
+                    </span>
+                </div>
+                <div class="col-md-3">
+                    <strong>Mains:</strong>
+                    <span>
+                        {% if module.mainsstatus %}
+                            ON
+                        {% else %}
+                            OFF
+                        {% endif %}
+                    </span>
+                </div>
+        </div>
+        </div>
+        </div>
+    </div>
     {% if module.online_status %}
 <div>
     {% if module.btsstatus %}

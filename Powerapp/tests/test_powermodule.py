@@ -159,10 +159,12 @@ class TestPowerModule(TestCase):
 
         :return: None
         """
-        data = {'module': '192.168.10.10', 'BTS': 'True', 'HVAC': 'False', 'name': 'Malay'}
+        data = {'module': '192.168.10.10', 'BTS': 'True', 'HVAC': 'False', 'name': 'Malay', 'MAINS':'True','GEN':'True'}
         urcd = UpdateRecorder(data)
 
         self.assertEqual(True,urcd.btsstatus)
+        self.assertEqual(True,urcd.genstatus)
+        self.assertEqual(True,urcd.mainsstatus)
         self.assertEqual(False,urcd.hvacstatus)
         self.assertEqual('192.168.10.10',urcd.module.ipaddress)
 
@@ -219,8 +221,7 @@ class TestPowerModule(TestCase):
         urcd = UpdateRecorder(data)
         newrcd = urcd.save()
 
-        self.assertEqual(True,newrcd.delta)
-        self.assertEqual(True,newrcd.delta)
+
         self.assertEqual(True,newrcd.delta)
         self.assertEqual(True,urcd.btsstatus)
         self.assertEqual(False,urcd.hvacstatus)
@@ -232,13 +233,13 @@ class TestPowerModule(TestCase):
 
         :return:
         """
-        data = {'module': '192.168.10.10', 'BTS': 'True', 'HVAC': 'T', 'name':'Himal'}
+        data = {'module': '192.168.10.10', 'BTS': 'True', 'HVAC': 'T', 'name':'Himal', 'GEN': 'T'}
         response = self.moduleclient.post('http://127.0.0.1:8000/hello/', data,
                                           content_type="application/json")
 
         json_string = response.content.decode("utf-8")  # decode json content to string
         data = json.loads(json_string)  # convert json string to a dict
-        sample = {"ACK": "OK","BTS":True,"HVAC":True}
+        sample = {"ACK": "OK","BTS":True,"HVAC":True, 'GEN':True }
         self.assertJSONEqual(json_string,sample)
 
         data = {'module': '192.168.10.1', 'BTS': 'True', 'HVAC': 'T', 'name':'Himal'} # data with an error

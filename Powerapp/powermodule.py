@@ -1,4 +1,3 @@
-
 from .httpsender import Sender
 from .models import Module, UpdateTracker
 
@@ -31,21 +30,22 @@ def status_parse(value):
 
     if value in true:
         return True
-    else: return False
+    else:
+        return False
 
 
 class Powermodule:
     """
     The powermodule class for managing the attributes of the Powermodule
     """
+
     def __init__(self, ipaddress):
         """
         Constructor for the Powermodule instance
         """
         self.ipaddress = ipaddress
-        self.sender = Sender() # create an httpsender instance
+        self.sender = Sender()  # create an httpsender instance
         self.mainendpoint = 'http://{0}/{1}/'
-
 
     def setBTSoff(self):
         """
@@ -55,7 +55,7 @@ class Powermodule:
 
         :return: JSON showing status of BTS, {"BTS":0} or {"BTS":1}
         """
-        endpoint = self.mainendpoint.format(self.ipaddress,'btsoff')
+        endpoint = self.mainendpoint.format(self.ipaddress, 'btsoff')
         response = self.sender.get(endpoint)
         return response
 
@@ -67,7 +67,7 @@ class Powermodule:
 
         :return: JSON showing status of BTS, {"BTS":0} or {"BTS":1}
         """
-        endpoint = self.mainendpoint.format(self.ipaddress,'btson')
+        endpoint = self.mainendpoint.format(self.ipaddress, 'btson')
         print(endpoint)
         response = self.sender.get(endpoint)
         return response
@@ -80,7 +80,7 @@ class Powermodule:
 
         :return: JSON showing status of HVAC, {"HVAC":0} or {"HVAC":1}
         """
-        endpoint = self.mainendpoint.format(self.ipaddress,'hvacoff')
+        endpoint = self.mainendpoint.format(self.ipaddress, 'hvacoff')
         response = self.sender.get(endpoint)
         return response
 
@@ -92,7 +92,7 @@ class Powermodule:
 
         :return: JSON showing status of HVAC, {"HVAC":0} or {"HVAC":1}
         """
-        endpoint = self.mainendpoint.format(self.ipaddress,'hvacon')
+        endpoint = self.mainendpoint.format(self.ipaddress, 'hvacon')
         response = self.sender.get(endpoint)
         return response
 
@@ -104,7 +104,7 @@ class Powermodule:
 
         :return: JSON showing status of GEN, {"GEN":0} or {"GEN":1}
         """
-        endpoint = self.mainendpoint.format(self.ipaddress,'genoff')
+        endpoint = self.mainendpoint.format(self.ipaddress, 'genoff')
         response = self.sender.get(endpoint)
         return response
 
@@ -116,7 +116,7 @@ class Powermodule:
 
         :return: JSON showing status of GEN, {"GEN":0} or {"GEN":1}
         """
-        endpoint = self.mainendpoint.format(self.ipaddress,'genon')
+        endpoint = self.mainendpoint.format(self.ipaddress, 'genon')
         response = self.sender.get(endpoint)
         return response
 
@@ -128,7 +128,7 @@ class Powermodule:
 
         :return: JSON showing status of BTS and HVAC
         """
-        endpoint = self.mainendpoint.format(self.ipaddress,'getall')
+        endpoint = self.mainendpoint.format(self.ipaddress, 'getall')
         response = self.sender.sendjson(endpoint)
         return response
 
@@ -139,47 +139,59 @@ class Powermodule:
 
         :return: JSON showing the name of the module
         """
-        endpoint = self.mainendpoint.format(self.ipaddress,'getall')
+        endpoint = self.mainendpoint.format(self.ipaddress, 'getall')
         response = self.sender.sendjson(endpoint)
         return response
 
-    def update_db_bts(self,val):
+    def update_db_bts(self, val):
         """
         Method to update the bts status of the module
 
         :param status:
         :return:
         """
-        status = status_parse(val) # parse the status value to a boolean value
+        status = status_parse(val)  # parse the status value to a boolean value
         module = Module.objects.get(ipaddress=self.ipaddress)
         module.btsstatus = status
         module.save(update_fields=['btsstatus'])
 
-    def update_db_hvac(self,val):
+    def update_db_hvac(self, val):
         """
         Method to update the hvac status of the module
 
         :param status:
         :return:
         """
-        status = status_parse(val) # parse the status value to a boolean value
+        status = status_parse(val)  # parse the status value to a boolean value
         module = Module.objects.get(ipaddress=self.ipaddress)
         module.hvacstatus = status
         module.save(update_fields=['hvacstatus'])
 
-    def update_db_gen(self,val):
+    def update_db_gen(self, val):
         """
         Method to update the gen status of the module
 
         :param status:
         :return:
         """
-        status = status_parse(val) # parse the status value to a boolean value
+        status = status_parse(val)  # parse the status value to a boolean value
         module = Module.objects.get(ipaddress=self.ipaddress)
         module.genstatus = status
         module.save(update_fields=['genstatus'])
 
-    def update_db_name(self,name):
+    def update_db_mains(self, val):
+        """
+        Method to update the mains status of the module
+
+        :param status:
+        :return:
+        """
+        status = status_parse(val)  # parse the status value to a boolean value
+        module = Module.objects.get(ipaddress=self.ipaddress)
+        module.genstatus = status
+        module.save(update_fields=['mainsstatus'])
+
+    def update_db_name(self, name):
         """
         Method to update the name of the module
 
@@ -190,17 +202,17 @@ class Powermodule:
         module.name = name
         module.save(update_fields=['name'])
 
-    def update_db(self,status):
+    def update_db(self, status):
         """
         Method to update the status in to the db
 
         :return:
         """
-        module = Module.objects.get(ipaddress = self.ipaddress)
+        module = Module.objects.get(ipaddress=self.ipaddress)
         module.btsstatus = status['BTS']
         module.hvacstatus = status['HVAC']
 
-        module.save(update_fields=['btsstatus','hvacstatus'])
+        module.save(update_fields=['btsstatus', 'hvacstatus'])
 
     def get_db_info(self):
         """
@@ -213,7 +225,7 @@ class Powermodule:
 
         return module
 
-    def update_rcvd(self,data):
+    def update_rcvd(self, data):
         """
         Process a dict of update data received from the power module
         :param data:
@@ -224,7 +236,7 @@ class Powermodule:
         except:
             pass
 
-        try :
+        try:
             hvac_status = data['HVAC']
         except:
             pass
@@ -234,14 +246,25 @@ class Powermodule:
         except:
             pass
 
+        try:
+            mains_status = data['MAINS']
+        except:
+            pass
 
+        try:
+            gen_status = data['GEN']
+        except:
+            pass
 
         # update the name of the module if name was provided
-        try :
+        try:
             self.update_db_name(name)
             self.update_db_bts(bts_status)  # update bts status
             self.update_db_hvac(hvac_status)  # update hvac status
-        except: pass
+            self.update_db_gen(gen_status)  # update gen status
+            self.update_db_mains(mains_status)  # update mains status
+        except:
+            pass
 
     @property
     def btsstatus(self):
@@ -305,10 +328,12 @@ class Powermodule:
         module = self.get_db_info()
         return module.pk
 
+
 class NullPowermodule:
     """
     A defualt null powermodule
     """
+
     def __init__(self):
         self.ipaddress = None
         self.name = None
@@ -317,10 +342,12 @@ class NullPowermodule:
         self.hvacstatus = None
         self.btsstatus = None
 
+
 class NullUpdateTracker:
     """
     A null record tracker model
     """
+
     def __init__(self):
         self.module = None
         self.btsstatus = None
@@ -329,7 +356,7 @@ class NullUpdateTracker:
         self.delta = None
 
     def serialize(self):
-        ans ={'HVAC':self.hvacstatus,'BTS':self.btsstatus}
+        ans = {'HVAC': self.hvacstatus, 'BTS': self.btsstatus}
         return ans
 
 
@@ -337,30 +364,33 @@ class UpdateRecorder:
     """
     Class to handle update records for modules
     """
+
     def __init__(self, data):
 
-        self.module = self.check_module_exist(data) # check if module exists a NullPowermodule is returned if not exist
+        self.module = self.check_module_exist(data)  # check if module exists a NullPowermodule is returned if not exist
         self.hvacstatus = None
         self.btsstatus = None
+        self.genstatus = None
+        self.mainsstatus = None
 
         if self.module.ipaddress is not None:
-            try :
+            try:
                 self.hvacstatus = status_parse(data['HVAC'])
                 self.btsstatus = status_parse(data['BTS'])
+                self.genstatus = status_parse(data['GEN'])
+                self.mainsstatus = status_parse(data['MAINS'])
             except:
                 pass
         else:
             pass
 
-    def check_module_exist(self,data):
+    def check_module_exist(self, data):
 
         try:
             return get_module_instance(data['module'])  # create a powermodule instance
         except:
             # create a Null module from the data
             return NullPowermodule()
-
-
 
     def check_if_update_is_different(self):
         """
@@ -370,17 +400,18 @@ class UpdateRecorder:
         """
         module = Module.objects.get(ipaddress=self.module.ipaddress)
 
-        try :
-            last_update= UpdateTracker.objects.filter(module=module).latest(field_name='time') # get the latest update for the module
-        except :
+        try:
+            last_update = UpdateTracker.objects.filter(module=module).latest(
+                field_name='time')  # get the latest update for the module
+        except:
             return True
         last_update_list = (last_update.btsstatus, last_update.hvacstatus)
-        new_update_list = (self.btsstatus,self.hvacstatus)
+        new_update_list = (self.btsstatus, self.hvacstatus)
 
         if last_update_list == new_update_list:
             return False
-        else : return True
-
+        else:
+            return True
 
     def save(self):
         """
@@ -392,19 +423,15 @@ class UpdateRecorder:
             # check if the module is defined in the NMS, do nothing if its not defined
             return NullUpdateTracker()
 
-        else :
-            delta = self.check_if_update_is_different()
+        else:
+            self.delta = self.check_if_update_is_different()
             module = Module.objects.get(ipaddress=self.module.ipaddress)
             try:
                 record = UpdateTracker.objects.create(module=module, btsstatus=self.btsstatus,
-                                                  hvacstatus=self.hvacstatus,
-                                                  delta=delta)
-            except:
-                #TODO add logging
-                record = NullUpdateTracker() # return a null record
+                                                      hvacstatus=self.hvacstatus, genstatus=self.genstatus,
+                                                      mainsstatus=self.mainsstatus, delta=self.delta)
+            except Exception as e:
+                # TODO add logging
+                print(e)
+                record = NullUpdateTracker()  # return a null record
             return record
-
-
-
-
-
